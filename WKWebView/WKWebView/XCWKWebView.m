@@ -72,6 +72,15 @@
 
 - (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void(^)(WKNavigationActionPolicy))decisionHandler{
     // 获得协议头(可以自定义协议头，根据协议头判断是否要执行跳转)
+    // WKWebView默认拦截scheme 需在下面方法手动打开
+    // 打开外部应用 Safari等操作
+    
+    // 打开外部应用 Safari等操作
+    if ([navigationAction.request.URL.absoluteString hasPrefix:@"xxx"]) { // 对应的scheme
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+    
     NSString *scheme = navigationAction.request.URL.scheme;
     if ([scheme isEqualToString:@"itheima"]) {
         // decisionHandler 对请求处理回调
