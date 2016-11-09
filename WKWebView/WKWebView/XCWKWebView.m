@@ -10,7 +10,7 @@
 #import <WebKit/WebKit.h>
 
 
-@interface XCWKWebView ()<WKNavigationDelegate>
+@interface XCWKWebView ()<WKNavigationDelegate,UIWebViewDelegate>
 
 @property (nonatomic,retain)WKWebView *webView;
 @property (nonatomic,retain)UIProgressView * progressView;
@@ -38,6 +38,7 @@
     NSString * htmlString = @"<p style='font-size:25px;color:#666666'>尚未拥有维金荟账号？<br/>您可以通过以下两种方式进行注册：<br/>1.请访问维金荟官网www.vmoney.cn进行注册<br/>2.请访问维金荟<a href='https://itunes.apple.com/cn/app/wei-jin-hui/id1041303464?mt=8' style='color:#089aff;font-size:25px'>APP下载页</a>，登陆APP后进行注册</p>";
     [_webView loadHTMLString:htmlString baseURL:url];
     _webView.navigationDelegate = self;
+    _webView.UIDelegate = self;
     // 将WKWebView添加到视图
     [self.view addSubview:_webView];//@"estimatedProgress"
     [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
@@ -150,6 +151,24 @@
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
 
 }
+/****web的alert事件****/
+
+/*只有一个按钮 确定按钮*/
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+    // WKWebView不支持JS的alert 用此方法进行拦截
+    // message为JS中alert显示的信息 可与前端开发约定好信息
+    /*只有一个按钮 确定按钮*/
+    if ([message isEqualToString:@"xxx"]) {
+        // 做OC操作
+    }
+    completionHandler();
+}
+/*两个按钮   一个取消一个确定*/
+- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
+    // 类比alert 拦截JS confirm
+    completionHandler(NO);
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
